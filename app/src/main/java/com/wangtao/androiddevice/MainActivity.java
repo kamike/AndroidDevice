@@ -1,7 +1,9 @@
 package com.wangtao.androiddevice;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -22,12 +24,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.wangtao.androiddevice.bean.AllParamsName;
 import com.wangtao.androiddevice.utils.CTelephoneInfo;
 import com.wangtao.androiddevice.utils.DeviceInfo;
-import com.wangtao.androiddevice.utils.LocationUtils;
 import com.wangtao.androiddevice.utils.NetSpeed;
 import com.wangtao.androiddevice.utils.NetworkInfotion;
 import com.wangtao.androiddevice.utils.StaticMthod;
@@ -62,7 +61,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
         linearScroll.addView(addShowTxtContent("实时速度(v)：", "m/s"));
         linearScroll.addView(addShowTxtContent(cityCode, "定位中.."));
         isAddLat = false;
-        new LocationUtils(mContext, new BDLocationListener() {
+   /*     new LocationUtils(mContext, new BDLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation bdLocation) {
                 animRefresh.cancel();
@@ -75,12 +74,17 @@ public class MainActivity extends BaseActivity implements AllParamsName {
                 updataShowTxtContent(linearScroll, "经度(jd)：", bdLocation.getLongitude() + "");
                 updataShowTxtContent(linearScroll, "实时速度(v)：", bdLocation.getSpeed() + "m/s");
             }
-        });
+        });*/
         linearScroll.addView(addShowTxtContent("品牌(sj_brand)：", android.os.Build.BRAND));
         linearScroll.addView(addShowTxtContent("型号(sj_model)：", android.os.Build.MODEL));
 
         CTelephoneInfo telephonyInfo = CTelephoneInfo.getInstance(this);
-        telephonyInfo.setCTelephoneInfo();
+        if (telephonyInfo != null) {
+            telephonyInfo.setCTelephoneInfo();
+            linearScroll.addView(addShowTxtContent("手机号码2(phone2)：", telephonyInfo.getINumeric2()));
+            linearScroll.addView(addShowTxtContent("卡号2(iccid2)：", telephonyInfo.getImeiSIM2()));
+
+        }
 
         //例如： PHONE_TYPE_NONE  无信号
         // PHONE_TYPE_GSM   GSM信号
@@ -91,9 +95,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
         linearScroll.addView(addShowTxtContent("系统版本(osver)：", Build.VERSION.SDK_INT + ""));
         linearScroll.addView(addShowTxtContent("手机串号(IMEI)：", tm.getDeviceId()));
         linearScroll.addView(addShowTxtContent("卡号1(iccid1)：", tm.getSimSerialNumber()));
-        linearScroll.addView(addShowTxtContent("卡号2(iccid2)：", telephonyInfo.getImeiSIM2()));
         linearScroll.addView(addShowTxtContent("手机号码1(phone1)：", TextUtils.isEmpty(tm.getLine1Number()) ? "None" : tm.getLine1Number()));
-        linearScroll.addView(addShowTxtContent("手机号码2(phone2)：", telephonyInfo.getINumeric2()));
         linearScroll.addView(addShowTxtContent("卡类型1(kakind2)：", DeviceInfo.getSimUsim(tm)));
         linearScroll.addView(addShowTxtContent("卡类型2(kakind1)：", ""));
         linearScroll.addView(addShowTxtContent("1槽运营商(yys1)：", DeviceInfo.getProvidersName(tm)));
@@ -185,14 +187,18 @@ public class MainActivity extends BaseActivity implements AllParamsName {
             linearScroll.addView(addShowTxtContent("小区号CID(" + i + ")：", list.get(i).getCid() + ""));
             linearScroll.addView(addShowTxtContent("小区号Rssi(" + i + ")：", list.get(i).getRssi() + ""));
         }
-        CellLocation cel = tm.getCellLocation();
-        GsmCellLocation gsm = (GsmCellLocation) cel;
-        if (gsm != null) {
-            linearScroll.addView(addShowTxtContent("小区号LAC(ci_1_0)：", gsm.getLac() + ""));
-            linearScroll.addView(addShowTxtContent("CID(CID)：", gsm.getCid() + ""));
-            doLogMsg("cid:" + gsm.getCid());
-            doLogMsg("psc:" + gsm.getPsc());
-            doLogMsg("lac:" + gsm.getLac());
+        try {
+            CellLocation cel = tm.getCellLocation();
+            GsmCellLocation gsm = (GsmCellLocation) cel;
+            if (gsm != null) {
+                linearScroll.addView(addShowTxtContent("小区号LAC(ci_1_0)：", gsm.getLac() + ""));
+                linearScroll.addView(addShowTxtContent("CID(CID)：", gsm.getCid() + ""));
+                doLogMsg("cid:" + gsm.getCid());
+                doLogMsg("psc:" + gsm.getPsc());
+                doLogMsg("lac:" + gsm.getLac());
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
         linearScroll.addView(addShowTxtContent("交换机号(sw1)：", ""));
         linearScroll.addView(addShowTxtContent("IP地址(ip1)：", NetworkInfotion.getLocalIpAddress()));
@@ -216,6 +222,9 @@ public class MainActivity extends BaseActivity implements AllParamsName {
 
     private void testData() {
         CTelephoneInfo telephonyInfo = CTelephoneInfo.getInstance(this);
+        if (telephonyInfo == null) {
+            return;
+        }
         telephonyInfo.setCTelephoneInfo();
         String imeiSIM1 = telephonyInfo.getImeiSIM1();
         String imeiSIM2 = telephonyInfo.getImeiSIM2();
@@ -262,7 +271,35 @@ public class MainActivity extends BaseActivity implements AllParamsName {
     };
 
     public void onclickMap(View view) {
-        doStartOter(MapShowActivity.class);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("功能选择");
+        //    指定下拉列表的显示数据
+        final String[] array = {"地图", "双卡测试", "硬件测试"};
+        //    设置一个下拉的列表选择项
+        builder.setItems(array, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                switch (which) {
+                    case 0:
+//                        doStartOter(MapShowActivity.class);
+                        break;
+                    case 1:
+                        doStartOter(DoubleCardActivity.class);
+                        break;
+                    case 2:
+                        doStartOter(HardwareActivity.class);
+
+                        break;
+                    default:
+
+                        break;
+                }
+
+            }
+        });
+        builder.setPositiveButton("取消", null);
+        builder.show();
     }
 
     public void onclickRefersh(View view) {

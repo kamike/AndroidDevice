@@ -18,14 +18,7 @@
             android:gravity="center"
             android:text="信息采集" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:clickable="true"
-            android:onClick="onclickDoubleCard"
-            android:padding="8dp"
-            android:text="双卡测试" />
+
 
         <Button
             android:layout_width="wrap_content"
@@ -34,7 +27,7 @@
             android:clickable="true"
             android:onClick="onclickMap"
             android:padding="8dp"
-            android:text="地图" />
+            android:text="功能选择" />
     </RelativeLayout>
 
     <ScrollView

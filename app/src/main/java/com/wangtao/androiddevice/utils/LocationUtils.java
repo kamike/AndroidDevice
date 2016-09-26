@@ -1,19 +1,10 @@
 package com.wangtao.androiddevice.utils;
 
-import android.content.Context;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.wangtao.universallylibs.utils.SaveCache;
-
-
 /**
  * @author wangtao 11-13
  */
 public class LocationUtils {
-    private final BDLocationListener listener;
+ /*   private final BDLocationListener listener;
     private LocationClient mLocClient;
     private Context mContext;
     private SaveCache save;
@@ -45,7 +36,7 @@ public class LocationUtils {
             mLocClient.stop();
             mLocClient.unRegisterLocationListener(listener);
         }
-    }
+    }*/
 
 
 }

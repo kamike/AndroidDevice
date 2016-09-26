@@ -43,7 +43,8 @@
             android:process=":remote" />
 
         <activity android:name=".MapShowActivity" />
-        <activity android:name=".DoubleCardActivity"></activity>
+        <activity android:name=".DoubleCardActivity" />
+        <activity android:name=".HardwareActivity"></activity>
     </application>
 
 </manifest>
