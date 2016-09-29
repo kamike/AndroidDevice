@@ -43,7 +43,7 @@ public class DoubleCardActivity extends BaseActivity {
 //        test50();
 //        getInfo4();
         test51DoubleCard();
-        testClassInfo();
+
 
     }
 
@@ -80,6 +80,7 @@ public class DoubleCardActivity extends BaseActivity {
         } else {
             linearScroll.addView(addShowTxtContent("手机的sdk版本小于API22(5.0)以下", ""));
 //            getInfo4();
+            testClassInfo();
         }
 
 

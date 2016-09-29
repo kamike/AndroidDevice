@@ -5,6 +5,5 @@ package com.wangtao.universallylibs;
  * QQ：751190264
  */
 public class ConfigProperties {
-    public static String baseUrl = "";
     public static final String CHAR_SET_NAME = "UTF-8";
 }
