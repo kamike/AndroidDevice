@@ -16,6 +16,7 @@ import android.telephony.TelephonyManager;
 import android.widget.LinearLayout;
 
 import com.wangtao.androiddevice.utils.DoubleCardBean;
+import com.wangtao.androiddevice.utils.DoubleNetworkUtils;
 import com.wangtao.androiddevice.utils.GaotongDoubleInfo;
 import com.wangtao.androiddevice.utils.MtkDoubleInfo;
 import com.wangtao.androiddevice.utils.NetworkInfotion;
@@ -154,9 +155,8 @@ public class DoubleCardActivity extends BaseActivity {
                 PhoneStateListener.LISTEN_SIGNAL_STRENGTH | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
 
 
-        tm.listen(new MyPhotoListener(subinfo.getSubscriptionId(),index), event);
+        tm.listen(new MyPhotoListener(subinfo.getSubscriptionId(), index), event);
         doLogMsg("listener--：" + subinfo.getSubscriptionId());
-        linearScroll.addView(addShowTxtContent(index + "onCallStateChanged", ""));
         linearScroll.addView(addShowTxtContent(index + "onMessageWaitingIndicatorChanged：", ""));
         linearScroll.addView(addShowTxtContent(index + "DataConnectionStateChanged：", ""));
         linearScroll.addView(addShowTxtContent(index + "ServiceStateChanged：", ""));
@@ -184,12 +184,6 @@ public class DoubleCardActivity extends BaseActivity {
 
         }
 
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            super.onCallStateChanged(state, incomingNumber);
-            doLogMsg("来电:" + incomingNumber);
-            updataShowTxtContent(linearScroll, index + "onCallStateChanged", "来电号码：" + incomingNumber);
-        }
 
         @Override
         public void onCellInfoChanged(List<CellInfo> cellInfo) {
@@ -197,6 +191,11 @@ public class DoubleCardActivity extends BaseActivity {
             doLogMsg("onCellInfoChanged:" + cellInfo);
         }
 
+        /**
+         * 返回手机当前所处的位置
+         *
+         * @param location
+         */
         @Override
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
@@ -210,6 +209,11 @@ public class DoubleCardActivity extends BaseActivity {
             doLogMsg("onDataActivity:" + direction);
         }
 
+        /**
+         * 数据连接状态改变可能导致网络类型的改变
+         *
+         * @param state
+         */
         @Override
         public void onDataConnectionStateChanged(int state) {
             super.onDataConnectionStateChanged(state);
@@ -259,5 +263,21 @@ public class DoubleCardActivity extends BaseActivity {
             updataShowTxtContent(linearScroll, index + "onSignalStrengthsChanged：", signalStrength.toString());
 
         }
+    }
+
+    /**
+     * 更新SIM卡状态和网络信息
+     *
+     * @param tm
+     */
+    private final void updateViews(TelephonyManager tm) {
+
+
+        DoubleNetworkUtils.mapSimStateToName(tm.getSimState());
+
+
+        DoubleNetworkUtils.mapNetworkTypeToName(tm.getNetworkType());
+
+
     }
 }
