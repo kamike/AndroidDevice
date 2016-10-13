@@ -125,16 +125,16 @@ public class DoubleCardActivity extends BaseActivity {
             int id = cur.getInt(cur.getColumnIndex("_id"));
 
 
-//            linearScroll.addView(addShowTxtContent("_id:", cur.getString(cur.getColumnIndex("_id"))));
-//            linearScroll.addView(addShowTxtContent("icc_id:", cur.getString(cur.getColumnIndex("icc_id"))));
-//            linearScroll.addView(addShowTxtContent("sim_id:", cur.getString(cur.getColumnIndex("sim_id"))));
-//            linearScroll.addView(addShowTxtContent("display_name:", cur.getString(cur.getColumnIndex("display_name"))));
-//            linearScroll.addView(addShowTxtContent("name_source:", cur.getString(cur.getColumnIndex("name_source"))));
-//            linearScroll.addView(addShowTxtContent("color:", cur.getString(cur.getColumnIndex("color"))));
-//            linearScroll.addView(addShowTxtContent("number:", cur.getString(cur.getColumnIndex("number"))));
-//            linearScroll.addView(addShowTxtContent("data_roaming:", cur.getString(cur.getColumnIndex("data_roaming"))));
-//            linearScroll.addView(addShowTxtContent("mcc:", cur.getString(cur.getColumnIndex("mcc"))));
-//            linearScroll.addView(addShowTxtContent("mnc:", cur.getString(cur.getColumnIndex("mnc"))));
+            linearScroll.addView(addShowTxtContent("_id:", cur.getString(cur.getColumnIndex("_id"))));
+            linearScroll.addView(addShowTxtContent("icc_id:", cur.getString(cur.getColumnIndex("icc_id"))));
+            linearScroll.addView(addShowTxtContent("sim_id:", cur.getString(cur.getColumnIndex("sim_id"))));
+            linearScroll.addView(addShowTxtContent("display_name:", cur.getString(cur.getColumnIndex("display_name"))));
+            linearScroll.addView(addShowTxtContent("name_source:", cur.getString(cur.getColumnIndex("name_source"))));
+            linearScroll.addView(addShowTxtContent("color:", cur.getString(cur.getColumnIndex("color"))));
+            linearScroll.addView(addShowTxtContent("number:", cur.getString(cur.getColumnIndex("number"))));
+            linearScroll.addView(addShowTxtContent("data_roaming:", cur.getString(cur.getColumnIndex("data_roaming"))));
+            linearScroll.addView(addShowTxtContent("mcc:", cur.getString(cur.getColumnIndex("mcc"))));
+            linearScroll.addView(addShowTxtContent("mnc:", cur.getString(cur.getColumnIndex("mnc"))));
         }
 
         doLogMsg("循环了多少次：" + index);
