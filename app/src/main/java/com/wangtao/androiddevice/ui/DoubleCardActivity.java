@@ -23,6 +23,7 @@ import com.wangtao.androiddevice.utils.GaotongDoubleInfo;
 import com.wangtao.androiddevice.utils.MtkDoubleInfo;
 import com.wangtao.androiddevice.utils.NetworkInfotion;
 import com.wangtao.androiddevice.utils.ReflectUtils;
+import com.wangtao.androiddevice.utils.SignalOperatUtils;
 import com.wangtao.universallylibs.BaseActivity;
 
 import java.util.List;
@@ -46,7 +47,6 @@ public class DoubleCardActivity extends BaseActivity {
 //        test50();
 //        getInfo4();
         test51DoubleCard();
-
 
     }
 
@@ -164,6 +164,7 @@ public class DoubleCardActivity extends BaseActivity {
         linearScroll.addView(addShowTxtContent(index + "ServiceStateChanged：", ""));
         linearScroll.addView(addShowTxtContent(index + "onSignalStrengthsChanged：", ""));
 
+
         linearScroll.addView(addShowTxtContent(index + "信号强度(dbm1)：", ""));
         linearScroll.addView(addShowTxtContent(index + "信号质量(db1)：", ""));
         linearScroll.addView(addShowTxtContent(index + "isGsm：", ""));
@@ -262,6 +263,8 @@ public class DoubleCardActivity extends BaseActivity {
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
             doLogMsg("onSignalStrengthsChanged:" + signalStrength);
+            updataShowTxtContent(linearScroll, index + "卡RSRP：", SignalOperatUtils.getAllParams(signalStrength.toString(), 8));
+            updataShowTxtContent(linearScroll, index + "卡RSRQ：", SignalOperatUtils.getAllParams(signalStrength.toString(), 9));
             if (signalStrength.isGsm()) {
                 updataShowTxtContent(linearScroll, index + "信号强度(dbm1)：", -113 + (2 * signalStrength.getGsmSignalStrength()) + "");
             } else {

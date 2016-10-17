@@ -21,6 +21,7 @@ import com.wangtao.androiddevice.R;
 import com.wangtao.androiddevice.utils.NetworkInfotion;
 import com.wangtao.androiddevice.utils.ReflectUtils;
 import com.wangtao.androiddevice.utils.SignMath;
+import com.wangtao.androiddevice.utils.SignalOperatUtils;
 import com.wangtao.universallylibs.BaseActivity;
 
 import java.util.List;
@@ -85,11 +86,15 @@ public class New51Activity extends BaseActivity {
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+        if (cell == null) {
+            return;
+        }
         for (NeighboringCellInfo info : cell) {
             doLogMsg("NeighboringCellInfo:" + info.getNetworkType());
             if (info.getRssi() == 192 && info.getLac() == -1 && info.getCid() == -1 && info.getPsc() == -1) {
                 continue;
             }
+
             int rssi = info.getRssi();
             if ("2G".equals(SignMath.getCurrentNetworkType234G(mContext, tm.getNetworkType()))) {
                 rssi = -113 + 2 * rssi;
@@ -119,6 +124,8 @@ public class New51Activity extends BaseActivity {
 
         linearScroll.addView(addShowTxtContent(index + "卡信号质量：", ""));
         linearScroll.addView(addShowTxtContent(index + "卡基站信息：", ""));
+        linearScroll.addView(addShowTxtContent(index + "卡RSRP：", ""));
+        linearScroll.addView(addShowTxtContent(index + "卡RSRQ：", ""));
 //        linearScroll.addView(addShowTxtContent(index + "信号质量(db1)：", ""));
 //        linearScroll.addView(addShowTxtContent(index + "isGsm：", ""));
 
@@ -169,6 +176,8 @@ public class New51Activity extends BaseActivity {
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
             doLogMsg("onSignalStrengthsChanged:" + signalStrength);
+            updataShowTxtContent(linearScroll, index + "卡RSRP：", SignalOperatUtils.getAllParams(signalStrength.toString(), 8));
+            updataShowTxtContent(linearScroll, index + "卡RSRQ：", SignalOperatUtils.getAllParams(signalStrength.toString(), 9));
             if (signalStrength.isGsm()) {
                 updataShowTxtContent(linearScroll, index + "卡信号质量：", signalStrength.getGsmSignalStrength()
                         + "=" + (-113 + 2 * signalStrength.getGsmSignalStrength()) + "dbm");

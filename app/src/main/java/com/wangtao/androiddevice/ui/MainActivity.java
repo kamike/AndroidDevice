@@ -184,11 +184,14 @@ public class MainActivity extends BaseActivity implements AllParamsName {
 
         List<NeighboringCellInfo> list = tm.getNeighboringCellInfo();
         doLogMsg("小区列表:" + list);
-        for (int i = 0; i < list.size(); i++) {
-            linearScroll.addView(addShowTxtContent("小区号LAC(" + i + ")：", list.get(i).getLac() + ""));
-            linearScroll.addView(addShowTxtContent("小区号CID(" + i + ")：", list.get(i).getCid() + ""));
-            linearScroll.addView(addShowTxtContent("小区号Rssi(" + i + ")：", list.get(i).getRssi() + ""));
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                linearScroll.addView(addShowTxtContent("小区号LAC(" + i + ")：", list.get(i).getLac() + ""));
+                linearScroll.addView(addShowTxtContent("小区号CID(" + i + ")：", list.get(i).getCid() + ""));
+                linearScroll.addView(addShowTxtContent("小区号Rssi(" + i + ")：", list.get(i).getRssi() + ""));
+            }
         }
+
         try {
             CellLocation cel = tm.getCellLocation();
             GsmCellLocation gsm = (GsmCellLocation) cel;

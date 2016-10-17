@@ -23,6 +23,7 @@ public class WellcomeActivity extends BaseActivity {
             @Override
             public void handleMessage(Message msg) {
                 doStartOter(MainActivity.class);
+                finish();
             }
         };
         h.sendEmptyMessageDelayed(0, 2000);
