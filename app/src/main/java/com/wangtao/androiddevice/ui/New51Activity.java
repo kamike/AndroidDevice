@@ -14,6 +14,7 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.wangtao.androiddevice.R;
@@ -44,6 +45,10 @@ public class New51Activity extends BaseActivity {
         linearScroll.addView(addShowTxtContent("====第" + 2, "张卡数据========="));
         getStaticPhoneInfo(2);
         getOtherParams(twoSubId, 2);
+        View view = new View(mContext);
+        ViewGroup.LayoutParams par = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (64 * screenDensity));
+        view.setLayoutParams(par);
+        linearScroll.addView(view);
 
     }
 
@@ -113,6 +118,7 @@ public class New51Activity extends BaseActivity {
         tm.listen(new MyPhotoListener(subId, index), event);
 
         linearScroll.addView(addShowTxtContent(index + "卡信号质量：", ""));
+        linearScroll.addView(addShowTxtContent(index + "卡基站信息：", ""));
 //        linearScroll.addView(addShowTxtContent(index + "信号质量(db1)：", ""));
 //        linearScroll.addView(addShowTxtContent(index + "isGsm：", ""));
 
@@ -144,11 +150,14 @@ public class New51Activity extends BaseActivity {
             doLogMsg("onCellLocationChanged:" + location);
             try {
                 CellLocation cel = tm.getCellLocation();
-                GsmCellLocation gsm = (GsmCellLocation) cel;
-                if (gsm != null) {
-                    doLogMsg("cid:" + gsm.getCid());
-                    doLogMsg("psc:" + gsm.getPsc());
-                    doLogMsg("lac:" + gsm.getLac());
+                GsmCellLocation info = (GsmCellLocation) cel;
+
+                if (info != null) {
+                    updataShowTxtContent(linearScroll, index + "卡基站信息：", "LAC:" + info.getLac() + ",CID:" +
+                            info.getCid() + "主扰码(PSC):" + info.getPsc());
+                    doLogMsg("cid:" + info.getCid());
+                    doLogMsg("psc:" + info.getPsc());
+                    doLogMsg("lac:" + info.getLac());
                 }
             } catch (ClassCastException e) {
                 e.printStackTrace();
