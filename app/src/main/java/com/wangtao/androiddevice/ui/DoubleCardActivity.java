@@ -1,4 +1,4 @@
-package com.wangtao.androiddevice;
+package com.wangtao.androiddevice.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,8 +13,10 @@ import android.telephony.SignalStrength;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.widget.LinearLayout;
 
+import com.wangtao.androiddevice.R;
 import com.wangtao.androiddevice.utils.DoubleCardBean;
 import com.wangtao.androiddevice.utils.DoubleNetworkUtils;
 import com.wangtao.androiddevice.utils.GaotongDoubleInfo;
@@ -189,6 +191,7 @@ public class DoubleCardActivity extends BaseActivity {
         public void onCellInfoChanged(List<CellInfo> cellInfo) {
             super.onCellInfoChanged(cellInfo);
             doLogMsg("onCellInfoChanged:" + cellInfo);
+
         }
 
         /**
@@ -200,6 +203,17 @@ public class DoubleCardActivity extends BaseActivity {
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
             doLogMsg("onCellLocationChanged:" + location);
+            try {
+                CellLocation cel = tm.getCellLocation();
+                GsmCellLocation gsm = (GsmCellLocation) cel;
+                if (gsm != null) {
+                    doLogMsg("cid:" + gsm.getCid());
+                    doLogMsg("psc:" + gsm.getPsc());
+                    doLogMsg("lac:" + gsm.getLac());
+                }
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
 
         }
 

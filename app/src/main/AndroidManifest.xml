@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.WellcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,12 +42,12 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".MapShowActivity" />
-        <activity android:name=".DoubleCardActivity" />
-        <activity android:name=".HardwareActivity" />
-        <activity android:name=".TestActivity" />
-        <activity android:name=".New51Activity" />
-        <activity android:name=".NotifyTestActivity"></activity>
+        <activity android:name=".ui.MapShowActivity" />
+        <activity android:name=".ui.DoubleCardActivity" />
+        <activity android:name=".ui.HardwareActivity" />
+        <activity android:name=".ui.New51Activity" />
+        <activity android:name=".ui.NotifyTestActivity" />
+        <activity android:name=".ui.MainActivity"></activity>
     </application>
 
 </manifest>

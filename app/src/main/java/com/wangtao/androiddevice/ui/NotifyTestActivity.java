@@ -1,4 +1,4 @@
-package com.wangtao.androiddevice;
+package com.wangtao.androiddevice.ui;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.wangtao.androiddevice.R;
 import com.wangtao.universallylibs.BaseActivity;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;

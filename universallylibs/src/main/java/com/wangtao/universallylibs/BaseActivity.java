@@ -224,7 +224,8 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
-    public void setStatusBars() {
+    public void doSetStatusBars() {
+
         setStatusBarDarkModeForMUI(true);
         setStatusBarDarkModeForMZ(true);
         //沉浸式
@@ -272,7 +273,7 @@ public abstract class BaseActivity extends Activity {
      * 设置状态栏图标和文本是否为深色
      * 注:仅支持小米和魅族
      */
-    protected void setStatusBarDarkMode(boolean darkMode) {
+    private void setStatusBarDarkMode(boolean darkMode) {
         setStatusBarDarkModeForMUI(darkMode);
         setStatusBarDarkModeForMZ(darkMode);
     }

@@ -1,4 +1,4 @@
-package com.wangtao.androiddevice;
+package com.wangtao.androiddevice.ui;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.LinearLayout;
 
+import com.wangtao.androiddevice.R;
 import com.wangtao.universallylibs.BaseActivity;
 
 public class HardwareActivity extends BaseActivity implements SensorEventListener {

@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.wangtao.androiddevice.New51Activity">
+    tools:context="com.wangtao.androiddevice.ui.New51Activity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,4 +24,13 @@
 
         </LinearLayout>
     </ScrollView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="刷新"
+        android:onClick="onclickTestRefresh"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
 </RelativeLayout>
