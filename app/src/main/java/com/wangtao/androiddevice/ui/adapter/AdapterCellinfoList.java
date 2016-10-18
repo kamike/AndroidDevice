@@ -1,4 +1,4 @@
-package com.wangtao.androiddevice.ui;
+package com.wangtao.androiddevice.ui.adapter;
 
 import android.content.Context;
 import android.telephony.CellInfo;
@@ -50,7 +50,7 @@ public class AdapterCellinfoList extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView tv = null;
-        if (convertView == null) {
+        if (tv == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.view_item_cell_list, null);
             tv = (TextView) convertView.findViewById(R.id.cell_info_list_tv);
         }
@@ -81,6 +81,9 @@ public class AdapterCellinfoList extends BaseAdapter {
     }
 
     private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv) {
+        if(tv==null){
+            return;
+        }
         StringBuffer sb = new StringBuffer();
         if (tag.equals("WCDMA")) {
             sb.append("MCC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 0));
@@ -90,7 +93,7 @@ public class AdapterCellinfoList extends BaseAdapter {
         sb.append(",CID:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 3));
         sb.append(",PSC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 4));
         sb.append("\n");
-        sb.append("信号强度:" + SignalOperatUtils.getSiglength(signLength));
+        sb.append("信号强度" + SignalOperatUtils.getSiglength(signLength));
         tv.setText(tag + ":" + sb.toString());
     }
 }

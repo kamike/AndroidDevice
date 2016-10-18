@@ -11,14 +11,15 @@ import android.telephony.SignalStrength;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.wangtao.androiddevice.R;
+import com.wangtao.androiddevice.ui.adapter.AdapterCellLocation;
+import com.wangtao.androiddevice.ui.adapter.AdapterCellinfoList;
 import com.wangtao.androiddevice.utils.ReflectUtils;
 import com.wangtao.universallylibs.BaseActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CellinfoRefershActivity extends BaseActivity {
@@ -36,6 +37,7 @@ public class CellinfoRefershActivity extends BaseActivity {
     @Override
     public void setAllData() {
         SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             List<SubscriptionInfo> dataList = mSubscriptionManager
                     .getActiveSubscriptionInfoList();
@@ -49,7 +51,10 @@ public class CellinfoRefershActivity extends BaseActivity {
             }
         }
         doLogMsg("getNetworkType:" + tm.getNetworkType());
-
+        List<CellInfo> list = tm.getAllCellInfo();
+        if(list!=null){
+            mListView.setAdapter(new AdapterCellinfoList(mContext,list));
+        }
     }
 
     private void showCellInfoList(List<CellInfo> cellInfoList) {
@@ -102,7 +107,8 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
-            doLogMsg("onCellLocationChanged:" + location);
+            doLogMsg("111onCellLocationChanged:" + location);
+//
         }
 
         @Override
@@ -162,9 +168,10 @@ public class CellinfoRefershActivity extends BaseActivity {
 
 
         public MyPhotoListener2(int subId) {
+            listCellLocation=new ArrayList<>();
             ReflectUtils.setFieldValue(this, "mSubId", subId);
         }
-
+        private ArrayList<CellLocation> listCellLocation;
         /**
          * 返回手机当前所处的位置
          *
@@ -173,13 +180,18 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
-            doLogMsg("onCellLocationChanged:" + location);
+            doLogMsg("2222onCellLocationChanged:" + location);
+            if(listCellLocation.contains(location)){
+                return;
+            }
+            listCellLocation.add(location);
+            mListView2.setAdapter(new AdapterCellLocation(mContext,listCellLocation));
         }
 
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
-            doLogMsg("onSignalStrengthsChanged:" + signalStrength.toString());
+            doLogMsg("22onSignalStrengthsChanged:" + signalStrength.toString());
 //            updataShowTxtContent(linearScroll, index + "卡RSRP：", SignalOperatUtils.getAllParams(signalStrength.toString(), 8));
 //            updataShowTxtContent(linearScroll, index + "卡RSRQ：", SignalOperatUtils.getAllParams(signalStrength.toString(), 9));
 //            if (signalStrength.isGsm()) {
@@ -199,20 +211,20 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onCellInfoChanged(List<CellInfo> cellInfo) {
             super.onCellInfoChanged(cellInfo);
-            doLogMsg("onCellInfoChanged:" + cellInfo);
-            mListView.setAdapter(new AdapterCellinfoList(mContext, cellInfo));
+            doLogMsg("222onCellInfoChanged:" + cellInfo);
+            mListView2.setAdapter(new AdapterCellinfoList(mContext, cellInfo));
         }
 
         @Override
         public void onDataConnectionStateChanged(int state, int networkType) {
             super.onDataConnectionStateChanged(state, networkType);
-            doLogMsg("onDataConnectionStateChanged:" + networkType);
+            doLogMsg("222onDataConnectionStateChanged:" + networkType);
         }
 
         @Override
         public void onMessageWaitingIndicatorChanged(boolean mwi) {
             super.onMessageWaitingIndicatorChanged(mwi);
-            doLogMsg("onMessageWaitingIndicatorChanged:" + mwi);
+            doLogMsg("222onMessageWaitingIndicatorChanged:" + mwi);
         }
 
         /**
@@ -224,9 +236,14 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onServiceStateChanged(ServiceState serviceState) {
             super.onServiceStateChanged(serviceState);
-            doLogMsg("onServiceStateChanged:" + serviceState);
+            doLogMsg("22onServiceStateChanged:" + serviceState);
         }
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }

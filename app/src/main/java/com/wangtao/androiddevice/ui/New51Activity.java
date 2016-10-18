@@ -50,6 +50,7 @@ public class New51Activity extends BaseActivity {
 
 //            int id = cur.getInt(cur.getColumnIndex("_id"));
         if (index == 1) {
+            //1卡数据
             cur.moveToNext();
 //                linearScroll.addView(addShowTxtContent("_id:", cur.getString(cur.getColumnIndex("_id"))));
             linearScroll.addView(addShowTxtContent("iccid：", cur.getString(cur.getColumnIndex("icc_id"))));
@@ -62,6 +63,7 @@ public class New51Activity extends BaseActivity {
             linearScroll.addView(addShowTxtContent("移动网络代码(mnc)：", cur.getString(cur.getColumnIndex("mnc"))));
         }
         if (index == 2) {
+            //2卡数据
             cur.moveToNext();
             cur.moveToNext();
 //                linearScroll.addView(addShowTxtContent("_id:", cur.getString(cur.getColumnIndex("_id"))));
