@@ -1,9 +1,9 @@
 package com.wangtao.androiddevice.utils;
 
 import android.telephony.SignalStrength;
+import android.text.TextUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * Created by Administrator on 2016/10/2.
@@ -26,11 +26,30 @@ public class SignalOperatUtils {
 
     public static String getAllParams(String signalStrength, int position) {
         String[] array = signalStrength.toString().split(" ");
-        System.out.println("array:" + Arrays.toString(array));
-        System.out.println("array长度:" + array.length);
         if (position >= array.length) {
             return null;
         }
         return array[position];
+    }
+    public static String getCellinfoFeil(String str,int index){
+        if(TextUtils.isEmpty(str)){
+            return "-";
+        }
+        str=str.substring(str.indexOf("mMcc"),str.length()-1);
+        System.out.println(str);
+        String[] array=str.split(" ");
+        if(index>=array.length){
+            return "--";
+        }
+        return  array[index].substring(array[index].indexOf("=")+1);
+    }
+
+    public static String getSiglength(String signLength) {
+        // CellSignalStrengthLte: ss=31 rsrp=-76 rsrq=-6 rssnr=2147483647 cqi=2147483647 ta=2147483647
+        if(TextUtils.isEmpty(signLength)){
+            return "-";
+        }
+        signLength=signLength.substring(signLength.indexOf(":"));
+        return ""+signLength;
     }
 }

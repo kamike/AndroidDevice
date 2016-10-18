@@ -47,7 +47,9 @@
         <activity android:name=".ui.HardwareActivity" />
         <activity android:name=".ui.New51Activity" />
         <activity android:name=".ui.NotifyTestActivity" />
-        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.TempTestActivity" />
+        <activity android:name=".ui.CellinfoRefershActivity"></activity>
     </application>
 
 </manifest>
