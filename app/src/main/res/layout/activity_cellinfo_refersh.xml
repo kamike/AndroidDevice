@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.wangtao.androiddevice.ui.CellinfoRefershActivity">
+    <TextView
+        android:id="@+id/refersh_cellinfo_tv1"
+        android:layout_width="wrap_content"
+        android:padding="12dp"
+        android:layout_height="wrap_content" />
 
     <ListView
         android:id="@+id/cell_info_listview"
@@ -15,9 +20,10 @@
         android:layout_weight="6"
         />
     <TextView
+        android:id="@+id/refersh_cellinfo_tv2"
         android:layout_width="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="2卡基站信息"
+        android:padding="12dp"
+        android:text=""
         android:layout_height="wrap_content" />
     <ListView
         android:id="@+id/cell_info_listview2"

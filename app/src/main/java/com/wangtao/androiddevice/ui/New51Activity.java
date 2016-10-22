@@ -1,14 +1,22 @@
 package com.wangtao.androiddevice.ui;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wangtao.androiddevice.R;
 import com.wangtao.androiddevice.utils.SignMath;
 import com.wangtao.universallylibs.BaseActivity;
+
+import java.util.List;
 
 public class New51Activity extends BaseActivity {
     private LinearLayout linearScroll;
@@ -21,20 +29,55 @@ public class New51Activity extends BaseActivity {
         doSetStatusBars();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public void setAllData() {
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        linearScroll.addView(addShowTxtContent("====第" + 1, "张卡数据========="));
-        linearScroll.addView(addShowTxtContent("网络类型：", SignMath.getCurrentNetworkType234G(mContext, tm.getNetworkType())));
-        getStaticPhoneInfo(1);
-        linearScroll.addView(addShowTxtContent("====第" + 2, "张卡数据========="));
-        getStaticPhoneInfo(2);
+        SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        List<SubscriptionInfo> dataList = mSubscriptionManager
+                .getActiveSubscriptionInfoList();
+
+        if (dataList == null) {
+            doShowMesage("手机的没有任何双卡信息");
+            return;
+        }
+        initManager(dataList, 0);
+        initManager(dataList, 1);
 //        View view = new View(mContext);
 //        ViewGroup.LayoutParams par = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (64 * screenDensity));
 //        view.setLayoutParams(par);
 //        linearScroll.addView(view);
 
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+    private void initManager(List<SubscriptionInfo> list, int index) {
+        doLogMsg("'有多少张卡的数据：" + list.size());
+
+        for (int i = 0; i < list.size(); i++) {
+            if (index >= list.size()) {
+                return;
+            }
+            SubscriptionInfo info = list.get(index);
+            doLogMsg(info.toString());
+            ImageView iv = new ImageView(mContext);
+            iv.setImageBitmap(info.createIconBitmap(mContext));
+            linearScroll.addView(iv);
+            if (index == 0) {
+                linearScroll.addView(addShowTxtContent("当前使用的网络类型：", SignMath.getCurrentNetworkType234G(mContext, tm.getNetworkType())));
+            }
+            linearScroll.addView(addShowTxtContent("iccid：", info.getIccId()));
+            linearScroll.addView(addShowTxtContent("卡槽编号：", info.getSimSlotIndex() + ""));
+            linearScroll.addView(addShowTxtContent("运营商：", info.getCarrierName() + ""));
+            linearScroll.addView(addShowTxtContent("显示名字：", info.getDisplayName() + ""));
+            linearScroll.addView(addShowTxtContent("手机号码：", info.getNumber()));
+            linearScroll.addView(addShowTxtContent("数据漫游：", info.getDataRoaming() + ""));
+            linearScroll.addView(addShowTxtContent("移动国家码(mcc)：", info.getMcc() + ""));
+            linearScroll.addView(addShowTxtContent("国家ISO码：", info.getCountryIso()));
+            linearScroll.addView(addShowTxtContent("移动网络码(mnc)：", info.getMnc() + ""));
+            return;
+        }
     }
 
     private void getStaticPhoneInfo(int index) {
@@ -81,12 +124,9 @@ public class New51Activity extends BaseActivity {
     }
 
 
-
     public void onclickTestRefresh(View view) {
         doStartOter(CellinfoRefershActivity.class);
     }
-
-
 
 
 }
