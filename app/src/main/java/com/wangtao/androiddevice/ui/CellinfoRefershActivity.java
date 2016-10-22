@@ -21,6 +21,7 @@ import com.wangtao.androiddevice.ui.adapter.AdapterCellinfoList;
 import com.wangtao.androiddevice.utils.ReflectUtils;
 import com.wangtao.androiddevice.utils.SignMath;
 import com.wangtao.universallylibs.BaseActivity;
+import com.wangtao.universallylibs.utils.LogSaveUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class CellinfoRefershActivity extends BaseActivity {
     private TextView tvNetwork1;
     private TextView tvNetwork2;
     private TelephonyManager tm;
+    private LogSaveUtils saveLog;
 
     @Override
     public void initShowLayout() {
@@ -44,6 +46,7 @@ public class CellinfoRefershActivity extends BaseActivity {
 
     @Override
     public void setAllData() {
+        saveLog = new LogSaveUtils("refersh_cellinfo.txt", mContext);
         SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -229,6 +232,8 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
+            saveLog.writeString("onCellLocationChanged");
+            saveLog.writeString(location.toString());
             doLogMsg("2222onCellLocatioChanged:" + location);
             this.cellLocation = location;
             setCellinfoListData();
@@ -257,6 +262,8 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onCellInfoChanged(List<CellInfo> cellInfo) {
             super.onCellInfoChanged(cellInfo);
+            saveLog.writeString("2卡小区列表");
+            saveLog.writeString(cellInfo);
             doLogMsg("222onCellInfoChanged:" + cellInfo);
             this.cellInfoList = cellInfo;
             setCellinfoListData();
