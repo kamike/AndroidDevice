@@ -27,7 +27,7 @@ public class WellcomeActivity extends BaseActivity {
             }
         };
         h.sendEmptyMessageDelayed(0, 2000);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE,
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_COARSE_LOCATION},
                 1);
     }
