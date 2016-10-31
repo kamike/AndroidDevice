@@ -55,12 +55,10 @@ public class CellinfoRefershActivity extends BaseActivity {
     public void setAllData() {
         saveLog = new LogSaveUtils("refersh_cellinfo.txt", mContext);
         SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             return;
         }
-        List<SubscriptionInfo> dataList = mSubscriptionManager
-                .getActiveSubscriptionInfoList();
+        List<SubscriptionInfo> dataList = mSubscriptionManager.getActiveSubscriptionInfoList();
         if (dataList == null) {
             doShowMesage("手机的没有任何双卡信息");
             return;
@@ -231,14 +229,14 @@ public class CellinfoRefershActivity extends BaseActivity {
             if (location instanceof GsmCellLocation) {
                 GsmCellLocation gsm = (GsmCellLocation) location;
                 if (gsm != null) {
-                    tvNetwork1.setText("正在使用基站GSM:" + gsm.toString());
+                    tvNetwork1.setText("正在使用基站:" + gsm.toString());
                     doLogMsg("111onCellLocationChangedGSM:" + gsm.toString());
                 }
             }
             if (location instanceof CdmaCellLocation) {
                 CdmaCellLocation cdma = (CdmaCellLocation) location;
                 if (cdma != null) {
-                    tvNetwork1.setText("正在使用基站CDMA:" + cdma.toString());
+                    tvNetwork1.setText("正在使用基站:" + cdma.toString());
                     doLogMsg("111onCellLocationChangedCDMA:" + cdma.toString());
                 }
             }
@@ -353,14 +351,14 @@ public class CellinfoRefershActivity extends BaseActivity {
             if (location instanceof GsmCellLocation) {
                 GsmCellLocation gsm = (GsmCellLocation) location;
                 if (gsm != null) {
-                    tvNetwork2.setText("正在使用基站GSM:" + gsm.toString());
+                    tvNetwork2.setText("正在使用基站:" + gsm.toString());
                     doLogMsg("2222onCellLocationChangedGSM:" + gsm.toString());
                 }
             }
             if (location instanceof CdmaCellLocation) {
                 CdmaCellLocation cdma = (CdmaCellLocation) location;
                 if (cdma != null) {
-                    tvNetwork2.setText("正在使用基站CDMA:" + cdma.toString());
+                    tvNetwork2.setText("正在使用基站:" + cdma.toString());
                     doLogMsg("2222ononCellLocationChangedCDMA:" + cdma.toString());
                 }
             }
