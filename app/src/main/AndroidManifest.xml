@@ -20,11 +20,11 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
+        android:name=".Appcalss"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".Appcalss"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.WellcomeActivity">
             <intent-filter>
@@ -50,7 +50,8 @@
         <activity android:name=".ui.NotifyTestActivity" />
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.TempTestActivity" />
-        <activity android:name=".ui.CellinfoRefershActivity"></activity>
+        <activity android:name=".ui.CellinfoRefershActivity" />
+        <activity android:name=".ui.TestActivity"></activity>
     </application>
 
 </manifest>

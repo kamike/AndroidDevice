@@ -292,6 +292,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
                     case 1:
 //                        doStartOter(DoubleCardActivity.class);
                         doStartOter(New51Activity.class);
+
                         break;
                     case 2:
                         doStartOter(HardwareActivity.class);

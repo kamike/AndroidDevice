@@ -1,4 +1,4 @@
-package com.wangtao.androiddevice.ui.adapter;
+package com.wangtao.androiddevice.ui;
 
 import android.content.Context;
 import android.telephony.CellInfo;
@@ -13,7 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.wangtao.androiddevice.R;
-import com.wangtao.androiddevice.utils.SignMath;
 import com.wangtao.androiddevice.utils.SignalOperatUtils;
 
 import java.util.List;
@@ -27,14 +26,10 @@ public class AdapterCellinfoList extends BaseAdapter {
 
     private final Context context;
     private final List<CellInfo> list;
-    private final int networkType;
-    private final String OperationName;
 
-    public AdapterCellinfoList(Context context, List<CellInfo> cellInfo, int networkName, String operName) {
+    public AdapterCellinfoList(Context context, List<CellInfo> cellInfo) {
         this.context = context;
         this.list = cellInfo;
-        this.networkType = networkName;
-        this.OperationName = operName;
     }
 
     @Override
@@ -59,72 +54,33 @@ public class AdapterCellinfoList extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.view_item_cell_list, null);
             tv = (TextView) convertView.findViewById(R.id.cell_info_list_tv);
         }
-
         CellInfo cellInfo = list.get(position);
-        getLte(tv, cellInfo);
-        //获取所有的cdma网络信息
-        getCdma(tv, cellInfo);
-        getGsm(tv, cellInfo);
-        getWcdma(tv, cellInfo);
-
-        return convertView;
-    }
-
-    private void getLte(TextView tv, CellInfo cellInfo) {
-        if (cellInfo instanceof CellInfoLte && SignMath.getNetworkClassByType(networkType) == SignMath.NETWORK_CLASS_4_G) {
-
+        if (cellInfo instanceof CellInfoLte) {
             String lacMnc = ((CellInfoLte) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoLte) cellInfo).getCellSignalStrength().toString());
             showCellTxt(lacMnc, signnLength, "LTE", tv);
         }
-    }
-
-    private void getGsm(TextView tv, CellInfo cellInfo) {
-        if (cellInfo instanceof CellInfoGsm) {
-            if (SignMath.getNetworkClassByType(networkType) != SignMath.NETWORK_CLASS_2_G) {
-                return;
-            }
-            String lacMnc = ((CellInfoGsm) cellInfo).getCellIdentity().toString();
-            String signnLength = (((CellInfoGsm) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "GSM", tv);
-        }
-    }
-
-    private void getWcdma(TextView tv, CellInfo cellInfo) {
-        if (cellInfo instanceof CellInfoWcdma) {
-            if (OperationName.equals("46003")) {
-                return;
-            }
-            if (SignMath.getNetworkClassByType(networkType) != SignMath.NETWORK_CLASS_3_G) {
-                return;
-            }
-            String lacMnc = ((CellInfoWcdma) cellInfo).getCellIdentity().toString();
-            String signnLength = (((CellInfoWcdma) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "WCDMA", tv);
-        }
-    }
-
-    private void getCdma(TextView tv, CellInfo cellInfo) {
+        //获取所有的cdma网络信息
         if (cellInfo instanceof CellInfoCdma) {
-            if (OperationName.equals("46003")) {
-                if (SignMath.getNetworkClassByType(networkType) == SignMath.NETWORK_CLASS_4_G) {
-                    return;
-                }
-            } else {
-                if (SignMath.getNetworkClassByType(networkType) != SignMath.NETWORK_CLASS_4_G) {
-                    return;
-                }
-            }
             String lacMnc = ((CellInfoCdma) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoCdma) cellInfo).getCellSignalStrength().toString());
             showCellTxt(lacMnc, signnLength, "CDMA", tv);
         }
+        if (cellInfo instanceof CellInfoGsm) {
+            String lacMnc = ((CellInfoGsm) cellInfo).getCellIdentity().toString();
+            String signnLength = (((CellInfoGsm) cellInfo).getCellSignalStrength().toString());
+            showCellTxt(lacMnc, signnLength, "GSM", tv);
+        }
+        if (cellInfo instanceof CellInfoWcdma) {
+            String lacMnc = ((CellInfoWcdma) cellInfo).getCellIdentity().toString();
+            String signnLength = (((CellInfoWcdma) cellInfo).getCellSignalStrength().toString());
+            showCellTxt(lacMnc, signnLength, "WCDMA", tv);
+        }
+
+        return convertView;
     }
 
     private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv) {
-        if (tv == null) {
-            return;
-        }
         StringBuffer sb = new StringBuffer();
         if (tag.equals("WCDMA")) {
             sb.append("MCC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 0));

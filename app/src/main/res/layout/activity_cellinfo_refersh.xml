@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#1f00"
-        android:layout_weight="6"
+        android:layout_weight="2"
         />
     <TextView
         android:id="@+id/refersh_cellinfo_tv2"

@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 
 public class LogSaveUtils {
     private final Context context;
-    private String filePath;
+    private File filePath;
 
     public LogSaveUtils(String fileName, Context context) {
         File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
@@ -28,7 +28,7 @@ public class LogSaveUtils {
         if(!f.exists()){
             try {
                 f.createNewFile();
-                filePath=f.getAbsolutePath();
+                filePath=f.getAbsoluteFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -36,6 +36,17 @@ public class LogSaveUtils {
         this.context = context;
     }
     public void writeString(Object str){
+        if(filePath==null){
+            return;
+
+        }
+        if(!filePath.exists()){
+            try {
+                filePath.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
             FileOutputStream out=new FileOutputStream(filePath,true);
             out.write("\n".getBytes());

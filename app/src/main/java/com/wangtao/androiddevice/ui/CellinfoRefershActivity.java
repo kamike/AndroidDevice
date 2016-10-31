@@ -4,6 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.telephony.CellInfo;
+import android.telephony.CellInfoCdma;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellInfoLte;
+import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -11,13 +15,13 @@ import android.telephony.SignalStrength;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
+import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wangtao.androiddevice.R;
-import com.wangtao.androiddevice.ui.adapter.AdapterCellLocation;
-import com.wangtao.androiddevice.ui.adapter.AdapterCellinfoList;
 import com.wangtao.androiddevice.utils.ReflectUtils;
 import com.wangtao.androiddevice.utils.SignMath;
 import com.wangtao.universallylibs.BaseActivity;
@@ -33,6 +37,7 @@ public class CellinfoRefershActivity extends BaseActivity {
     private TextView tvNetwork2;
     private TelephonyManager tm;
     private LogSaveUtils saveLog;
+    private CellLocation cellInfoOneTemp;
 
     @Override
     public void initShowLayout() {
@@ -44,29 +49,116 @@ public class CellinfoRefershActivity extends BaseActivity {
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
     }
 
+    private ArrayList<CellInfo> listOne;
+
     @Override
     public void setAllData() {
         saveLog = new LogSaveUtils("refersh_cellinfo.txt", mContext);
         SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            List<SubscriptionInfo> dataList = mSubscriptionManager
-                    .getActiveSubscriptionInfoList();
-            if (dataList == null) {
-                doShowMesage("手机的没有任何双卡信息");
-                return;
-            }
-            doLogMsg("'有多少张卡的数据：" + dataList.size());
-            for (int i = 0; i < dataList.size(); i++) {
-                getOtherParams(dataList.get(i).getSubscriptionId(), i);
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return;
+        }
+        List<SubscriptionInfo> dataList = mSubscriptionManager
+                .getActiveSubscriptionInfoList();
+        if (dataList == null) {
+            doShowMesage("手机的没有任何双卡信息");
+            return;
+        }
+        doLogMsg("'有多少张卡的数据：" + dataList.size());
+        for (int i = 0; i < dataList.size(); i++) {
+            getOtherParams(dataList.get(i).getSubscriptionId(), i);
         }
         doLogMsg("getNetworkTypeService:" + tm.getNetworkType() + "," + tm.getNetworkOperatorName() + "," + tm.getNetworkOperator());
         List<CellInfo> list = tm.getAllCellInfo();
+        CellInfo cellOne = null, cellTow = null;
+        listOne = new ArrayList<>();
+        ArrayList<CellInfo> listTow = new ArrayList<>();
         if (list != null) {
-            mListView.setAdapter(new AdapterCellinfoList(mContext, list, tm.getNetworkType(), tm.getSimOperator()));
+            for (CellInfo info : list) {
+                doLogMsg("邻区：" + info.toString());
+                if (info.isRegistered()) {
+                    if (cellOne != null) {
+                        cellTow = info;
+                    } else {
+                        cellOne = info;
+                    }
+                } else {
+                    if (cellTow != null) {
+                        listTow.add(info);
+                    } else {
+                        listOne.add(info);
+                    }
+                }
+            }
+        }
+        if (cellOne != null) {
+            listOne.add(cellOne);
+        }
+        if (cellTow != null) {
+            listTow.add(cellTow);
+        }
+        doLogMsg("=========ces=============");
+        if (dataList.size() == 2 && listTow.isEmpty() && !listOne.isEmpty()) {
+            //如果第二张卡没邻区，判断第一张卡是不是第二张的
+            changeListPosition(listOne, tm.getNetworkType());
+        }
+
+        mListView.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listOne));
+        mListView2.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listTow));
+    }
+
+    private void changeListPosition(ArrayList<CellInfo> listOne, int networkType) {
+        boolean isMisstake = false;
+        for (CellInfo cellInfo : listOne) {
+            if (TextUtils.equals(tm.getNetworkOperator(), "46003")) {
+                if (cellInfo instanceof CellInfoWcdma) {
+                    isMisstake = true;
+                }
+                if (cellInfo instanceof CellInfoGsm) {
+                    if (SignMath.NETWORK_CLASS_2_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+                if (cellInfo instanceof CellInfoCdma) {
+                    if (SignMath.NETWORK_CLASS_4_G == SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+                if (cellInfo instanceof CellInfoLte) {
+                    if (SignMath.NETWORK_CLASS_4_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+            } else {
+                if (cellInfo instanceof CellInfoWcdma) {
+                    if (SignMath.NETWORK_CLASS_3_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+                if (cellInfo instanceof CellInfoGsm) {
+                    if (SignMath.NETWORK_CLASS_2_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+                if (cellInfo instanceof CellInfoCdma) {
+                    if (SignMath.NETWORK_CLASS_4_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+                if (cellInfo instanceof CellInfoLte) {
+                    if (SignMath.NETWORK_CLASS_4_G != SignMath.getNetworkClassByType(networkType)) {
+                        isMisstake = true;
+                    }
+                }
+            }
+        }
+        if (isMisstake) {
+            mListView.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, new ArrayList<CellInfo>()));
+            mListView2.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listOne));
         }
     }
+
 
     private void showCellInfoList(List<CellInfo> cellInfoList) {
 
@@ -111,6 +203,7 @@ public class CellinfoRefershActivity extends BaseActivity {
         private String operName;
 
         public MyPhotoListener1(int subId) {
+            doLogMsg("MyPhotoListener1");
             ReflectUtils.setFieldValue(this, "mSubId", subId);
         }
 
@@ -121,7 +214,7 @@ public class CellinfoRefershActivity extends BaseActivity {
             if (cellInfoList == null || cellInfoList.isEmpty()) {
                 return;
             }
-            mListView.setAdapter(new AdapterCellinfoList(mContext, cellInfoList, networkName, operName));
+//            mListView.setAdapter(new AdapterCellinfoList(mContext, cellInfoList, networkName, operName));
         }
 
         /**
@@ -133,6 +226,24 @@ public class CellinfoRefershActivity extends BaseActivity {
         public void onCellLocationChanged(CellLocation location) {
             super.onCellLocationChanged(location);
             doLogMsg("111onCellLocationChanged:" + location);
+            String str = tvNetwork1.getText().toString();
+            cellInfoOneTemp = location;
+            if (location instanceof GsmCellLocation) {
+                GsmCellLocation gsm = (GsmCellLocation) location;
+                if (gsm != null) {
+                    tvNetwork1.setText("正在使用基站GSM:" + gsm.toString());
+                    doLogMsg("111onCellLocationChangedGSM:" + gsm.toString());
+                }
+            }
+            if (location instanceof CdmaCellLocation) {
+                CdmaCellLocation cdma = (CdmaCellLocation) location;
+                if (cdma != null) {
+                    tvNetwork1.setText("正在使用基站CDMA:" + cdma.toString());
+                    doLogMsg("111onCellLocationChangedCDMA:" + cdma.toString());
+                }
+            }
+
+
 //
         }
 
@@ -206,6 +317,7 @@ public class CellinfoRefershActivity extends BaseActivity {
         private CellLocation cellLocation;
 
         public MyPhotoListener2(int subId) {
+            doLogMsg("MyPhotoListener22");
             ReflectUtils.setFieldValue(this, "mSubId", subId);
         }
 
@@ -216,12 +328,12 @@ public class CellinfoRefershActivity extends BaseActivity {
             if (cellLocation != null) {
                 ArrayList<CellLocation> listCellLocation = new ArrayList<>();
                 listCellLocation.add(cellLocation);
-                mListView2.setAdapter(new AdapterCellLocation(mContext, listCellLocation));
+//                mListView2.setAdapter(new AdapterCellLocation(mContext, listCellLocation));
             }
             if (cellInfoList == null || cellInfoList.isEmpty()) {
                 return;
             }
-            mListView2.setAdapter(new AdapterCellinfoList(mContext, cellInfoList, networkName, operName));
+//            mListView2.setAdapter(new AdapterCellinfoList(mContext, cellInfoList, networkName, operName));
         }
 
         /**
@@ -237,11 +349,27 @@ public class CellinfoRefershActivity extends BaseActivity {
             doLogMsg("2222onCellLocatioChanged:" + location);
             this.cellLocation = location;
             setCellinfoListData();
+            String str = tvNetwork2.getText().toString();
+            if (location instanceof GsmCellLocation) {
+                GsmCellLocation gsm = (GsmCellLocation) location;
+                if (gsm != null) {
+                    tvNetwork2.setText("正在使用基站GSM:" + gsm.toString());
+                    doLogMsg("2222onCellLocationChangedGSM:" + gsm.toString());
+                }
+            }
+            if (location instanceof CdmaCellLocation) {
+                CdmaCellLocation cdma = (CdmaCellLocation) location;
+                if (cdma != null) {
+                    tvNetwork2.setText("正在使用基站CDMA:" + cdma.toString());
+                    doLogMsg("2222ononCellLocationChangedCDMA:" + cdma.toString());
+                }
+            }
         }
 
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
+
             doLogMsg("22onSignalStrengthsChanged:" + signalStrength.toString());
 //            updataShowTxtContent(linearScroll, index + "卡RSRP：", SignalOperatUtils.getAllParams(signalStrength.toString(), 8));
 //            updataShowTxtContent(linearScroll, index + "卡RSRQ：", SignalOperatUtils.getAllParams(signalStrength.toString(), 9));
