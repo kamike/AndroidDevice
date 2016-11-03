@@ -149,10 +149,11 @@ public class SignMath {
             case NETWORK_TYPE_HSUPA:
             case NETWORK_TYPE_HSPA:
             case NETWORK_TYPE_EVDO_B:
-            case NETWORK_TYPE_EHRPD:
+
             case NETWORK_TYPE_HSPAP:
             case 17:
                 return "3G";
+            case NETWORK_TYPE_EHRPD:
             case NETWORK_TYPE_LTE:
             case 18:
                 return "4G";

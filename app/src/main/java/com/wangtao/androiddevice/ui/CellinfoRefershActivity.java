@@ -38,6 +38,7 @@ public class CellinfoRefershActivity extends BaseActivity {
     private TelephonyManager tm;
     private LogSaveUtils saveLog;
     private CellLocation cellInfoOneTemp;
+    private TextView tvType1, tvType2;
 
     @Override
     public void initShowLayout() {
@@ -47,13 +48,15 @@ public class CellinfoRefershActivity extends BaseActivity {
         tvNetwork1 = (TextView) findViewById(R.id.refersh_cellinfo_tv1);
         tvNetwork2 = (TextView) findViewById(R.id.refersh_cellinfo_tv2);
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        tvType1 = (TextView) findViewById(R.id.refersh_network_type_1);
+        tvType2 = (TextView) findViewById(R.id.refersh_network_type_2);
     }
 
     private ArrayList<CellInfo> listOne;
 
     @Override
     public void setAllData() {
-        saveLog = new LogSaveUtils("refersh_cellinfo.txt", mContext);
+        saveLog = new LogSaveUtils("refersh_cellinfo.txt");
         SubscriptionManager mSubscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             return;
@@ -295,11 +298,12 @@ public class CellinfoRefershActivity extends BaseActivity {
         @Override
         public void onServiceStateChanged(ServiceState serviceState) {
             super.onServiceStateChanged(serviceState);
-            doLogMsg("onServiceStateChanged:" + serviceState);
+            doLogMsg("onServiceStateChanged:" + serviceState.toString());
             String str = getNetworkTypeService(serviceState);
             networkName = Integer.parseInt(str);
             operName = serviceState.getOperatorNumeric();
-            tvNetwork1.setText("1卡网络类型：" + SignMath.getNetorkTypeName(networkName) + "," + SignMath.getNetworkClassByTypeName(networkName) + "," +
+            doLogMsg("网络类型数字："+networkName);
+            tvType1.setText("1卡网络类型：" + SignMath.getNetorkTypeName(networkName) + "," + SignMath.getNetworkClassByTypeName(networkName) + "," +
                     serviceState.getOperatorNumeric());
             setCellinfoListData();
         }
@@ -422,7 +426,7 @@ public class CellinfoRefershActivity extends BaseActivity {
             String str = getNetworkTypeService(serviceState);
             this.networkName = Integer.parseInt(str);
             this.operName = serviceState.getOperatorNumeric();
-            tvNetwork2.setText("2卡网络类型：" + SignMath.getNetorkTypeName(Integer.parseInt(str)) + "," + SignMath.getNetworkClassByTypeName(networkName) +
+            tvType2.setText("2卡网络类型：" + SignMath.getNetorkTypeName(Integer.parseInt(str)) + "," + SignMath.getNetworkClassByTypeName(networkName) +
                     "," + serviceState.getOperatorNumeric());
             setCellinfoListData();
 

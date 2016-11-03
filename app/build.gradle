@@ -8,13 +8,13 @@ android {
         releaseConfig {
             keyAlias 'mldp'
             keyPassword '02640264a'
-            storeFile file('G:/develop/my_home/apk_key_12-24')
+            storeFile file('C:/Users/Administrator/Desktop/key_store/apk_key_12-24.keystore')
             storePassword '02640264a'
         }
         debugConfig {
             keyAlias 'mldp'
             keyPassword '02640264a'
-            storeFile file('G:/develop/my_home/apk_key_12-24')
+            storeFile file('C:/Users/Administrator/Desktop/key_store/apk_key_12-24.keystore')
             storePassword '02640264a'
         }
     }
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.wangtao.androiddevice"
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
