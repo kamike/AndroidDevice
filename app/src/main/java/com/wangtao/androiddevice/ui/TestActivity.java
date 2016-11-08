@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.telephony.CellInfo;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.view.View;
 
 import com.wangtao.androiddevice.R;
@@ -23,9 +24,11 @@ public class TestActivity extends BaseActivity {
     public void initShowLayout() {
         setContentView(R.layout.activity_test);
     }
-
+    TelephonyManager telephonyManager;
     @Override
     public void setAllData() {
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         if (android.os.Build.VERSION.SDK_INT > 20) {
             doShowMesage("系统版本大于5.0");
             return;
@@ -33,14 +36,21 @@ public class TestActivity extends BaseActivity {
     }
 
     public void onclickSaveData(View view) {
+
         if (android.os.Build.VERSION.SDK_INT > 20) {
             doShowMesage("系统版本大于5.0");
             return;
         }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
         String fileName = "test_4.2_" + dateFormat.format(new Date()) + "log";
         save = new LogSaveUtils(fileName);
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        GsmCellLocation location = (GsmCellLocation) telephonyManager.getCellLocation();
+        if(location!=null){
+            save.writeString("getCellLocation："+location.toString());
+        }
+
+
         List<NeighboringCellInfo> infos = telephonyManager
                 .getNeighboringCellInfo();
         doLogMsg("NeighboringCellInfo：" + infos.size());
