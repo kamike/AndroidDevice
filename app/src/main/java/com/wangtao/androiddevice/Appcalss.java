@@ -2,8 +2,6 @@ package com.wangtao.androiddevice;
 
 import android.app.Application;
 
-import com.wangtao.universallylibs.CrashHandler;
-
 
 /**
  * Created by Appcalss on 2016/9/26.
@@ -14,7 +12,7 @@ public class Appcalss extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CrashHandler.getInstance().init(this);
+//        CrashHandler.getInstance().init(this);
 
     }
 }

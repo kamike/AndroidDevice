@@ -1,11 +1,16 @@
-package com.wangtao.androiddevice.ui;
+package com.wangtao.androiddevice.ui.adapter;
 
 import android.content.Context;
+import android.os.Build;
+import android.telephony.CellIdentityGsm;
+import android.telephony.CellIdentityLte;
+import android.telephony.CellIdentityWcdma;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,37 +63,63 @@ public class AdapterCellinfoList extends BaseAdapter {
         if (cellInfo instanceof CellInfoLte) {
             String lacMnc = ((CellInfoLte) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoLte) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "LTE", tv);
+
+            CellInfoLte lteInfo = (CellInfoLte) cellInfo;
+            CellIdentityLte cellId = lteInfo.getCellIdentity();
+            String crfcn = "--";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                crfcn = "" + cellId.getEarfcn();
+            }
+
+            showCellTxt(lacMnc, signnLength, "LTE", tv, crfcn);
+
         }
         //获取所有的cdma网络信息
         if (cellInfo instanceof CellInfoCdma) {
             String lacMnc = ((CellInfoCdma) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoCdma) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "CDMA", tv);
+
+            showCellTxt(lacMnc, signnLength, "CDMA", tv, "--");
         }
         if (cellInfo instanceof CellInfoGsm) {
             String lacMnc = ((CellInfoGsm) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoGsm) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "GSM", tv);
+
+            CellInfoGsm cdmaInfo = (CellInfoGsm) cellInfo;
+            CellIdentityGsm cellId = cdmaInfo.getCellIdentity();
+            String crfcn = "--";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                crfcn = "" + cellId.getArfcn();
+            }
+            showCellTxt(lacMnc, signnLength, "GSM", tv, crfcn);
         }
         if (cellInfo instanceof CellInfoWcdma) {
             String lacMnc = ((CellInfoWcdma) cellInfo).getCellIdentity().toString();
             String signnLength = (((CellInfoWcdma) cellInfo).getCellSignalStrength().toString());
-            showCellTxt(lacMnc, signnLength, "WCDMA", tv);
+
+            CellInfoWcdma cdmaInfo = (CellInfoWcdma) cellInfo;
+            CellIdentityWcdma cellId = cdmaInfo.getCellIdentity();
+            String crfcn = "--";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                crfcn = "" + cellId.getUarfcn();
+            }
+            showCellTxt(lacMnc, signnLength, "WCDMA", tv, crfcn);
         }
 
         return convertView;
     }
 
-    private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv) {
+    private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv, String arfcn) {
         StringBuffer sb = new StringBuffer();
         if (tag.equals("WCDMA")) {
             sb.append("MCC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 0));
             sb.append(",MNC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 1));
         }
-        sb.append(",LAC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 2));
-        sb.append(",CID:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 3));
-        sb.append(",PSC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 4));
+        sb.append(",CID:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 2));
+        sb.append(",PCI:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 3));
+        sb.append(",LAC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 4));
+        arfcn = TextUtils.equals("2147483647", arfcn) ? "--" : arfcn;
+        sb.append(",ARFCN:").append(arfcn);
         sb.append("\n");
         sb.append("信号强度" + SignalOperatUtils.getSiglength(signLength));
         tv.setText(tag + ":" + sb.toString());

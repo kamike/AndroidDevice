@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
 
     @Override
     public void setAllData() {
-        doSetStatusBars();
+//        doSetStatusBars();
         linearScroll.removeAllViews();
         final Animation animRefresh = AnimationUtils.loadAnimation(mContext, R.anim.rotate_return);
         findViewById(R.id.main_refersh_iv).startAnimation(animRefresh);
@@ -279,7 +279,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("功能选择");
         //    指定下拉列表的显示数据
-        final String[] array = {"地图", "双卡测试", "硬件测试","test4.2"};
+        final String[] array = {"地图", "双卡测试", "硬件测试","测试4.2"};
         //    设置一个下拉的列表选择项
         builder.setItems(array, new DialogInterface.OnClickListener() {
             @Override
@@ -295,7 +295,7 @@ public class MainActivity extends BaseActivity implements AllParamsName {
 
                         break;
                     case 2:
-                        doStartOter(HardwareActivity.class);
+//                        doStartOter(HardwareActivity.class);
 
                         break;
                     case 3:

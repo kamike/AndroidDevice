@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wangtao.androiddevice.R;
+import com.wangtao.androiddevice.ui.adapter.AdapterCellinfoList;
 import com.wangtao.androiddevice.utils.ReflectUtils;
 import com.wangtao.androiddevice.utils.SignMath;
 import com.wangtao.universallylibs.BaseActivity;
@@ -105,8 +106,8 @@ public class CellinfoRefershActivity extends BaseActivity {
             changeListPosition(listOne, tm.getNetworkType());
         }
 
-        mListView.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listOne));
-        mListView2.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listTow));
+        mListView.setAdapter(new AdapterCellinfoList(mContext, listOne));
+        mListView2.setAdapter(new AdapterCellinfoList(mContext, listTow));
     }
 
     private void changeListPosition(ArrayList<CellInfo> listOne, int networkType) {
@@ -155,8 +156,8 @@ public class CellinfoRefershActivity extends BaseActivity {
             }
         }
         if (isMisstake) {
-            mListView.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, new ArrayList<CellInfo>()));
-            mListView2.setAdapter(new com.wangtao.androiddevice.ui.AdapterCellinfoList(mContext, listOne));
+            mListView.setAdapter(new AdapterCellinfoList(mContext, new ArrayList<CellInfo>()));
+            mListView2.setAdapter(new AdapterCellinfoList(mContext, listOne));
         }
     }
 

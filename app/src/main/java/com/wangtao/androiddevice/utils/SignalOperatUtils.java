@@ -45,7 +45,11 @@ public class SignalOperatUtils {
         if (index >= array.length) {
             return "--";
         }
-        return array[index].substring(array[index].indexOf("=") + 1);
+        String resoult = array[index].substring(array[index].indexOf("=") + 1);
+        if (TextUtils.equals("2147483647", resoult)) {
+            return "--";
+        }
+        return resoult;
     }
 
     public static String getSiglength(String signLength) {
@@ -54,6 +58,7 @@ public class SignalOperatUtils {
             return "-";
         }
         signLength = signLength.substring(signLength.indexOf(":"));
-        return "" + signLength;
+
+        return signLength.replaceAll("2147483647","--");
     }
 }

@@ -8,13 +8,13 @@ android {
         releaseConfig {
             keyAlias 'mldp'
             keyPassword '02640264a'
-            storeFile file('C:/Users/Administrator/Desktop/key_store/apk_key_12-24.keystore')
+            storeFile file('C:/Users/Administrator/Desktop/treatwo/treatwo.keystore')
             storePassword '02640264a'
         }
         debugConfig {
             keyAlias 'mldp'
             keyPassword '02640264a'
-            storeFile file('C:/Users/Administrator/Desktop/key_store/apk_key_12-24.keystore')
+            storeFile file('C:/Users/Administrator/Desktop/treatwo/treatwo.keystore')
             storePassword '02640264a'
         }
     }
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.wangtao.androiddevice"
-        minSdkVersion 17
+        minSdkVersion 18
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -52,4 +52,6 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+
+
 }
