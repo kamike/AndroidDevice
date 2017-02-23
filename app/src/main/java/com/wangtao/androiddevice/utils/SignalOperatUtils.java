@@ -32,7 +32,34 @@ public class SignalOperatUtils {
         return array[position];
     }
 
-    public static String getCellinfoFeil(String str, int index) {
+    public static int getCellinfoFeilInt(String str, int index) {
+        if (TextUtils.isEmpty(str)) {
+            return 0;
+        }
+        if (str.indexOf("mMcc") == -1) {
+            return 0;
+        }
+        str = str.substring(str.indexOf("mMcc"), str.length() - 1);
+        System.out.println(str);
+        String[] array = str.split(" ");
+        if (index >= array.length) {
+            return 0;
+        }
+        String resoult = array[index].substring(array[index].indexOf("=") + 1);
+        if (TextUtils.equals("2147483647", resoult)) {
+            return 0;
+        }
+        int r = 0;
+        try {
+            r = Integer.parseInt(resoult);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return r;
+    }
+
+    public static String getCellinfoFeilString(String str, int index) {
         if (TextUtils.isEmpty(str)) {
             return "--";
         }
@@ -49,6 +76,7 @@ public class SignalOperatUtils {
         if (TextUtils.equals("2147483647", resoult)) {
             return "--";
         }
+
         return resoult;
     }
 
@@ -59,6 +87,6 @@ public class SignalOperatUtils {
         }
         signLength = signLength.substring(signLength.indexOf(":"));
 
-        return signLength.replaceAll("2147483647","--");
+        return signLength.replaceAll("2147483647", "--");
     }
 }

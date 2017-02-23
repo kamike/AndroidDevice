@@ -112,12 +112,55 @@ public class AdapterCellinfoList extends BaseAdapter {
     private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv, String arfcn) {
         StringBuffer sb = new StringBuffer();
         if (tag.equals("WCDMA")) {
-            sb.append("MCC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 0));
-            sb.append(",MNC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 1));
+            int mcc = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 0);
+
+
+            sb.append("MCC:").append(mcc == 460 ? 460 : 460);
+            sb.append(",MNC:");
+            String mnc = SignalOperatUtils.getCellinfoFeilString(lacMnc, 1);
+
+            if (TextUtils.equals(mnc, "00") || TextUtils.equals(mnc, "01") || TextUtils.equals(mnc, "02") || TextUtils.equals(mnc, "03") || TextUtils.equals(mnc, "11")) {
+                sb.append(mnc);
+            } else {
+                sb.append("--");
+            }
+
         }
-        sb.append(",CID:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 2));
-        sb.append(",PCI:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 3));
-        sb.append(",LAC:").append(SignalOperatUtils.getCellinfoFeil(lacMnc, 4));
+        sb.append(",CID:");
+        int cid = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 2);
+
+
+        if (TextUtils.equals(tag, "GSM") || TextUtils.equals(tag, "CDMA")) {
+            if (cid > 256 || cid < 0) {
+                sb.append("--");
+            } else {
+                sb.append(cid);
+            }
+
+        } else {
+            if (cid > 65535 || cid < 0) {
+                sb.append("--");
+            } else {
+                sb.append(cid % 256);
+            }
+        }
+        sb.append(",PCI:");
+        int pci = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 3);
+        if (pci > 504 || pci < 0) {
+            sb.append("--");
+        } else {
+            sb.append(pci);
+
+        }
+
+        sb.append(",LAC:");
+        int lac = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 4);
+        if (lac < 0 || lac > 65535) {
+            sb.append("--");
+        } else {
+            sb.append(lac);
+        }
+
         arfcn = TextUtils.equals("2147483647", arfcn) ? "--" : arfcn;
         sb.append(",ARFCN:").append(arfcn);
         sb.append("\n");
