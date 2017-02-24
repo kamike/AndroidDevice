@@ -10,6 +10,8 @@ import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+import android.telephony.CellSignalStrengthCdma;
+import android.telephony.CellSignalStrengthLte;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import com.wangtao.androiddevice.R;
 import com.wangtao.androiddevice.utils.SignalOperatUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -59,6 +63,7 @@ public class AdapterCellinfoList extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.view_item_cell_list, null);
             tv = (TextView) convertView.findViewById(R.id.cell_info_list_tv);
         }
+        tv.setTag(position);
         CellInfo cellInfo = list.get(position);
         if (cellInfo instanceof CellInfoLte) {
             String lacMnc = ((CellInfoLte) cellInfo).getCellIdentity().toString();
@@ -66,20 +71,22 @@ public class AdapterCellinfoList extends BaseAdapter {
 
             CellInfoLte lteInfo = (CellInfoLte) cellInfo;
             CellIdentityLte cellId = lteInfo.getCellIdentity();
-            String crfcn = "--";
+            int crfcn = -1;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                crfcn = "" + cellId.getEarfcn();
+                crfcn = cellId.getEarfcn();
             }
 
-            showCellTxt(lacMnc, signnLength, "LTE", tv, crfcn);
+            showCellTxt(lacMnc, signnLength, "LTE", tv, crfcn, lteInfo.getCellSignalStrength());
 
         }
         //获取所有的cdma网络信息
         if (cellInfo instanceof CellInfoCdma) {
             String lacMnc = ((CellInfoCdma) cellInfo).getCellIdentity().toString();
-            String signnLength = (((CellInfoCdma) cellInfo).getCellSignalStrength().toString());
+            CellSignalStrengthCdma length = ((CellInfoCdma) cellInfo).getCellSignalStrength();
 
-            showCellTxt(lacMnc, signnLength, "CDMA", tv, "--");
+            String signnLength = (((CellInfoCdma) cellInfo).getCellSignalStrength().toString());
+            //cdma模式取的是dbm
+            showCellTxt(lacMnc, signnLength, "CDMA", tv, length.getCdmaDbm(), null);
         }
         if (cellInfo instanceof CellInfoGsm) {
             String lacMnc = ((CellInfoGsm) cellInfo).getCellIdentity().toString();
@@ -87,11 +94,11 @@ public class AdapterCellinfoList extends BaseAdapter {
 
             CellInfoGsm cdmaInfo = (CellInfoGsm) cellInfo;
             CellIdentityGsm cellId = cdmaInfo.getCellIdentity();
-            String crfcn = "--";
+            int crfcn = -1;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                crfcn = "" + cellId.getArfcn();
+                crfcn = cellId.getArfcn();
             }
-            showCellTxt(lacMnc, signnLength, "GSM", tv, crfcn);
+            showCellTxt(lacMnc, signnLength, "GSM", tv, crfcn, null);
         }
         if (cellInfo instanceof CellInfoWcdma) {
             String lacMnc = ((CellInfoWcdma) cellInfo).getCellIdentity().toString();
@@ -99,17 +106,17 @@ public class AdapterCellinfoList extends BaseAdapter {
 
             CellInfoWcdma cdmaInfo = (CellInfoWcdma) cellInfo;
             CellIdentityWcdma cellId = cdmaInfo.getCellIdentity();
-            String crfcn = "--";
+            int crfcn = -1;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                crfcn = "" + cellId.getUarfcn();
+                crfcn = cellId.getUarfcn();
             }
-            showCellTxt(lacMnc, signnLength, "WCDMA", tv, crfcn);
+            showCellTxt(lacMnc, signnLength, "WCDMA", tv, crfcn, null);
         }
 
         return convertView;
     }
 
-    private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv, String arfcn) {
+    private void showCellTxt(String lacMnc, String signLength, String tag, TextView tv, int arfcn, CellSignalStrengthLte lteCell) {
         StringBuffer sb = new StringBuffer();
         if (tag.equals("WCDMA")) {
             int mcc = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 0);
@@ -127,21 +134,23 @@ public class AdapterCellinfoList extends BaseAdapter {
 
         }
         sb.append(",CID:");
-        int cid = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 2);
+        int ciLong = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 2);
 
+        System.out.println("1111-ciLong:" + ciLong + "," + tv.getTag());
 
         if (TextUtils.equals(tag, "GSM") || TextUtils.equals(tag, "CDMA")) {
-            if (cid > 256 || cid < 0) {
+            if (ciLong >= 65535 || ciLong <= 0) {
                 sb.append("--");
             } else {
-                sb.append(cid);
+                sb.append(ciLong);
             }
 
         } else {
-            if (cid > 65535 || cid < 0) {
+            //46394213
+            if (ciLong >= Integer.MAX_VALUE || ciLong == 0) {
                 sb.append("--");
             } else {
-                sb.append(cid % 256);
+                sb.append(ciLong % 256);
             }
         }
         sb.append(",PCI:");
@@ -160,11 +169,80 @@ public class AdapterCellinfoList extends BaseAdapter {
         } else {
             sb.append(lac);
         }
+        int asu = 0;
 
-        arfcn = TextUtils.equals("2147483647", arfcn) ? "--" : arfcn;
-        sb.append(",ARFCN:").append(arfcn);
+        sb.append(",ARFCN:");
+        if (TextUtils.equals("CDMA", tag)) {
+            sb.append("--");
+            sb.append("\n");
+            asu = (arfcn + 113) / 2;
+        } else {
+            if (arfcn < 0 || arfcn > 99999) {
+                sb.append("--");
+            } else {
+                sb.append(arfcn);
+
+            }
+            asu = SignalOperatUtils.getAsu(signLength);
+
+        }
         sb.append("\n");
-        sb.append("信号强度" + SignalOperatUtils.getSiglength(signLength));
+        sb.append("asu:" + asu);
+
+        sb.append("，[接收功率]");
+
+
+        if (tag.equals("GSM")) {//2G
+            sb.append("RXL:");
+            sb.append(-113 + 2 * asu);
+        } else if (tag.equals("WCDMA") || tag.equals("CDMA")) {//3G
+            sb.append("RSCP:");
+            sb.append(asu - 116);
+        } else {
+            sb.append("RSRP:");
+            sb.append(asu - 140);
+        }
+        if (lteCell != null) {
+            sb.append(",[信噪比]SINR:");
+            int sinr = +getLteFeild("getRssnr", lteCell);
+            if (sinr < -10 || sinr > 30) {
+                sb.append("--");
+            } else {
+                sb.append(sinr);
+            }
+            int rsrq = getLteFeild("getRsrq", lteCell);
+            if (rsrq < -30 || rsrq > 0) {
+                sb.append(",RSRQ:--");
+            } else {
+                sb.append(",RSRQ:" + rsrq);
+            }
+
+            sb.append(",eNB:" + ciLong / 256);
+
+        }
+
+        if (TextUtils.equals("WCDMA", tag)) {
+            sb.append(",RNC:" + ciLong / 65536);
+        }
+
         tv.setText(tag + ":" + sb.toString());
     }
+
+    public int getLteFeild(String feildName, CellSignalStrengthLte lte) {
+        try {
+            Method getMethod = CellSignalStrengthLte.class.getDeclaredMethod(feildName);
+            getMethod.setAccessible(true);
+            Object resoult = getMethod.invoke(lte);
+            return Integer.parseInt("" + resoult);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
 }

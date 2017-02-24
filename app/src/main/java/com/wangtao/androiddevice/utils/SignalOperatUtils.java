@@ -89,4 +89,31 @@ public class SignalOperatUtils {
 
         return signLength.replaceAll("2147483647", "--");
     }
+
+    public static int getAsu(String signLength) {
+        // CellSignalStrengthLte: ss=31 rsrp=-76 rsrq=-6 rssnr=2147483647 cqi=2147483647 ta=2147483647
+        System.out.println("====signLength======" + signLength);
+        if (TextUtils.isEmpty(signLength)) {
+            return -1;
+        }
+        signLength = signLength.substring(signLength.indexOf(":"));
+
+        String str1 = signLength.split(" ")[1];
+        System.out.println(str1);
+        if (str1.indexOf("=") == -1) {
+            return -1;
+        }
+        String str2 = str1.split("=")[1];
+        System.out.println(str2);
+        int asu = -1;
+        try {
+            asu = Integer.parseInt(str2);
+        } catch (NumberFormatException e) {
+            e.getMessage();
+        }
+
+
+
+        return asu;
+    }
 }
