@@ -3,7 +3,6 @@ package com.wangtao.androiddevice.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.telephony.TelephonyManager;
 
 import static android.telephony.TelephonyManager.NETWORK_TYPE_1xRTT;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_CDMA;
@@ -12,6 +11,7 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_EHRPD;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_0;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_A;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_B;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_GPRS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSDPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPAP;
@@ -106,7 +106,7 @@ public class SignMath {
                 return NETWORK_CLASS_UNAVAILABLE;
             case NETWORK_TYPE_WIFI:
                 return NETWORK_CLASS_WIFI;
-            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case NETWORK_TYPE_GPRS:
             case 16:
             case NETWORK_TYPE_EDGE:
             case NETWORK_TYPE_CDMA:
@@ -135,7 +135,35 @@ public class SignMath {
         switch (networkType) {
             case NETWORK_TYPE_UNAVAILABLE:
                 return "unknow";
-            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case RIL_RADIO_TECHNOLOGY_GPRS:
+            case RIL_RADIO_TECHNOLOGY_EDGE:
+            case NETWORK_TYPE_CDMA:
+            case NETWORK_TYPE_1xRTT:
+            case NETWORK_TYPE_IDEN:
+                return "2G";
+            case RIL_RADIO_TECHNOLOGY_UMTS:
+            case NETWORK_TYPE_EVDO_0:
+            case NETWORK_TYPE_EVDO_A:
+            case NETWORK_TYPE_HSDPA:
+            case NETWORK_TYPE_HSUPA:
+            case NETWORK_TYPE_HSPA:
+            case NETWORK_TYPE_EVDO_B:
+            case NETWORK_TYPE_HSPAP:
+            case 17:
+                return "3G";
+            case NETWORK_TYPE_EHRPD:
+            case NETWORK_TYPE_LTE:
+            case 18:
+                return "4G";
+            default:
+                return "unknow";
+        }
+    }
+    public static String getNetworkClassByTypeNameNew(int networkType) {
+        switch (networkType) {
+            case NETWORK_TYPE_UNAVAILABLE:
+                return "unknow";
+            case RIL_RADIO_TECHNOLOGY_GPRS:
             case 16:
             case NETWORK_TYPE_EDGE:
             case NETWORK_TYPE_CDMA:
@@ -149,7 +177,6 @@ public class SignMath {
             case NETWORK_TYPE_HSUPA:
             case NETWORK_TYPE_HSPA:
             case NETWORK_TYPE_EVDO_B:
-
             case NETWORK_TYPE_HSPAP:
             case 17:
                 return "3G";
@@ -164,7 +191,6 @@ public class SignMath {
 
     public static String getNetorkTypeName(int rt) {
         String rtString;
-
         switch(rt) {
             case RIL_RADIO_TECHNOLOGY_UNKNOWN:
                 rtString = "Unknown";

@@ -134,7 +134,7 @@ public class AdapterCellinfoList extends BaseAdapter {
 
         }
         sb.append(",CID:");
-        int ciLong = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 2);
+        int ciLong = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 3);
 
         System.out.println("1111-ciLong:" + ciLong + "," + tv.getTag());
 
@@ -153,17 +153,33 @@ public class AdapterCellinfoList extends BaseAdapter {
                 sb.append(ciLong % 256);
             }
         }
-        sb.append(",PCI:");
-        int pci = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 3);
-        if (pci > 504 || pci < 0) {
-            sb.append("--");
-        } else {
-            sb.append(pci);
 
+        if (TextUtils.equals(tag, "WCDMA")) {
+            if (lacMnc.indexOf("mPsc") != -1) {
+                int mPsc = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 4);
+                sb.append(",PSC:");
+                if (mPsc > 504 || mPsc < 0) {
+                    sb.append("--");
+                } else {
+                    sb.append(mPsc);
+
+                }
+            }
+        }
+        if (TextUtils.equals(tag, "LTE")) {
+            int pci = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 3);
+            sb.append(",PCI:");
+            if (pci > 504 || pci < 0) {
+                sb.append("--");
+            } else {
+                sb.append(pci);
+
+            }
         }
 
+
         sb.append(",LAC:");
-        int lac = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 4);
+        int lac = SignalOperatUtils.getCellinfoFeilInt(lacMnc, 2);
         if (lac < 0 || lac > 65535) {
             sb.append("--");
         } else {
@@ -189,19 +205,24 @@ public class AdapterCellinfoList extends BaseAdapter {
         sb.append("\n");
         sb.append("asu:" + asu);
 
+        boolean isChangeAsu = asu > 0 || asu < -140;
+
         sb.append("，[接收功率]");
 
 
         if (tag.equals("GSM")) {//2G
             sb.append("RXL:");
-            sb.append(-113 + 2 * asu);
+            sb.append(isChangeAsu ? -113 + 2 * asu : asu);
         } else if (tag.equals("WCDMA") || tag.equals("CDMA")) {//3G
             sb.append("RSCP:");
-            sb.append(asu - 116);
+
+            sb.append(isChangeAsu ? asu - 116 : asu);
         } else {
             sb.append("RSRP:");
-            sb.append(asu - 140);
+            sb.append(isChangeAsu ? asu - 140 : asu);
         }
+
+
         if (lteCell != null) {
             sb.append(",[信噪比]SINR:");
             int sinr = +getLteFeild("getRssnr", lteCell);
@@ -241,7 +262,6 @@ public class AdapterCellinfoList extends BaseAdapter {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
         return -1;
     }
 

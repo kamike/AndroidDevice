@@ -33,6 +33,7 @@ public class SignalOperatUtils {
     }
 
     public static int getCellinfoFeilInt(String str, int index) {
+        //CellIdentityGsm:{ mMcc=460 mMnc=0 mLac=10147 mCid=5341 mArfcn=46 mBsic=0x10} CellSignalStrengthGsm: ss=31 ber=99 mTa=0}
         if (TextUtils.isEmpty(str)) {
             return 0;
         }
