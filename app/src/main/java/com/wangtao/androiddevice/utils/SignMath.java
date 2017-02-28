@@ -131,67 +131,69 @@ public class SignMath {
                 return NETWORK_CLASS_UNKNOWN;
         }
     }
+
+//    public static String getNetworkClassByTypeName(int networkType) {
+//        switch (networkType) {
+//            case NETWORK_TYPE_UNAVAILABLE:
+//                return "unknow";
+//            case RIL_RADIO_TECHNOLOGY_GPRS:
+//            case RIL_RADIO_TECHNOLOGY_EDGE:
+//            case NETWORK_TYPE_CDMA:
+//            case NETWORK_TYPE_1xRTT:
+//            case NETWORK_TYPE_IDEN:
+//                return "2G";
+//            case RIL_RADIO_TECHNOLOGY_UMTS:
+//            case NETWORK_TYPE_EVDO_0:
+//            case NETWORK_TYPE_EVDO_A:
+//            case NETWORK_TYPE_HSDPA:
+//            case NETWORK_TYPE_HSUPA:
+//            case NETWORK_TYPE_HSPA:
+//            case NETWORK_TYPE_EVDO_B:
+//            case NETWORK_TYPE_HSPAP:
+//            case 17:
+//                return "3G";
+//            case NETWORK_TYPE_EHRPD:
+//            case NETWORK_TYPE_LTE:
+//            case 18:
+//                return "4G";
+//            default:
+//                return "unknow";
+//        }
+//    }
+
     public static String getNetworkClassByTypeName(int networkType) {
         switch (networkType) {
             case NETWORK_TYPE_UNAVAILABLE:
                 return "unknow";
             case RIL_RADIO_TECHNOLOGY_GPRS:
+            case RIL_RADIO_TECHNOLOGY_GSM:
             case RIL_RADIO_TECHNOLOGY_EDGE:
-            case NETWORK_TYPE_CDMA:
-            case NETWORK_TYPE_1xRTT:
-            case NETWORK_TYPE_IDEN:
+            case RIL_RADIO_TECHNOLOGY_IS95A:
+            case RIL_RADIO_TECHNOLOGY_IS95B:
+            case RIL_RADIO_TECHNOLOGY_1xRTT:
                 return "2G";
+            case RIL_RADIO_TECHNOLOGY_EVDO_0:
+            case RIL_RADIO_TECHNOLOGY_EVDO_A:
+            case RIL_RADIO_TECHNOLOGY_EVDO_B:
+            case RIL_RADIO_TECHNOLOGY_HSDPA:
+            case RIL_RADIO_TECHNOLOGY_HSUPA:
+            case RIL_RADIO_TECHNOLOGY_HSPA:
+            case RIL_RADIO_TECHNOLOGY_HSPAP:
+            case RIL_RADIO_TECHNOLOGY_EHRPD:
             case RIL_RADIO_TECHNOLOGY_UMTS:
-            case NETWORK_TYPE_EVDO_0:
-            case NETWORK_TYPE_EVDO_A:
-            case NETWORK_TYPE_HSDPA:
-            case NETWORK_TYPE_HSUPA:
-            case NETWORK_TYPE_HSPA:
-            case NETWORK_TYPE_EVDO_B:
-            case NETWORK_TYPE_HSPAP:
-            case 17:
+            case RIL_RADIO_TECHNOLOGY_TD_SCDMA:
                 return "3G";
-            case NETWORK_TYPE_EHRPD:
-            case NETWORK_TYPE_LTE:
+            case RIL_RADIO_TECHNOLOGY_LTE:
             case 18:
                 return "4G";
             default:
-                return "unknow";
-        }
-    }
-    public static String getNetworkClassByTypeNameNew(int networkType) {
-        switch (networkType) {
-            case NETWORK_TYPE_UNAVAILABLE:
-                return "unknow";
-            case RIL_RADIO_TECHNOLOGY_GPRS:
-            case 16:
-            case NETWORK_TYPE_EDGE:
-            case NETWORK_TYPE_CDMA:
-            case NETWORK_TYPE_1xRTT:
-            case NETWORK_TYPE_IDEN:
-                return "2G";
-            case NETWORK_TYPE_UMTS:
-            case NETWORK_TYPE_EVDO_0:
-            case NETWORK_TYPE_EVDO_A:
-            case NETWORK_TYPE_HSDPA:
-            case NETWORK_TYPE_HSUPA:
-            case NETWORK_TYPE_HSPA:
-            case NETWORK_TYPE_EVDO_B:
-            case NETWORK_TYPE_HSPAP:
-            case 17:
-                return "3G";
-            case NETWORK_TYPE_EHRPD:
-            case NETWORK_TYPE_LTE:
-            case 18:
-                return "4G";
-            default:
-                return "unknow";
+                return " 3G";
         }
     }
 
     public static String getNetorkTypeName(int rt) {
         String rtString;
-        switch(rt) {
+        switch (rt) {
             case RIL_RADIO_TECHNOLOGY_UNKNOWN:
                 rtString = "Unknown";
                 break;
@@ -255,47 +257,46 @@ public class SignMath {
         }
         return rtString;
     }
+
     public static final int RIL_RADIO_TECHNOLOGY_UNKNOWN = 0;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_GPRS = 1;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_EDGE = 2;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_UMTS = 3;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_IS95A = 4;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_IS95B = 5;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_1xRTT = 6;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_EVDO_0 = 7;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_EVDO_A = 8;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_HSDPA = 9;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_HSUPA = 10;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_HSPA = 11;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_EVDO_B = 12;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_EHRPD = 13;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_LTE = 14;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_HSPAP = 15;
     /**
      * GSM radio technology only supports voice. It does not support data.
-     * 
      */
     public static final int RIL_RADIO_TECHNOLOGY_GSM = 16;
-    
+
     public static final int RIL_RADIO_TECHNOLOGY_TD_SCDMA = 17;
     /**
      * IWLAN
-     * 
      */
     public static final int RIL_RADIO_TECHNOLOGY_IWLAN = 18;
 
